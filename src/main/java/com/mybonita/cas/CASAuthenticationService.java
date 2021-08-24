@@ -6,20 +6,23 @@ import org.bonitasoft.engine.authentication.impl.AuthenticationServiceImpl;
 import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
 import org.jasig.cas.client.validation.TicketValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.bonitasoft.engine.log.technical.TechnicalLoggerService;
+import org.bonitasoft.engine.identity.IdentityService;
 
 import java.io.Serializable;
 import java.util.Map;
 
-public class CASAuthenticationService implements GenericAuthenticationService {
+public class CASAuthenticationService extends AuthenticationServiceImpl {
 
-    @Autowired
-    private AuthenticationServiceImpl authenticationService;
+    public CASAuthenticationService(final IdentityService identityService, final TechnicalLoggerService logger) {
+	super(identityService, logger);
+    }
 
     public String checkUserCredentials(Map<String, Serializable> credentials) {
 
         // local login:
         if (credentials.get(AuthenticationConstants.CAS_TICKET) == null) {
-            return authenticationService.checkUserCredentials(credentials);
+            return super.checkUserCredentials(credentials);
         }
 
         // cas login:
